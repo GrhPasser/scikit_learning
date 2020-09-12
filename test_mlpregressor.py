@@ -3,6 +3,7 @@
 # author: Runhao G  time: 2020/9/12
 from sklearn.neural_network import MLPRegressor
 import numpy as np
+from sklearn.utils.validation import check_random_state
 
 X = np.array([[1, 1, 1],
                     [2, 2, 2],
@@ -45,23 +46,24 @@ layer_units = ([n_features] + hidden_layer_sizes +
                [self.n_outputs_])
 
 # check random state
-self._random_state = check_random_state(self.random_state)
+mlp_estimator._random_state = check_random_state(mlp_estimator.random_state)
 
-if not hasattr(self, 'coefs_') or (not self.warm_start and not
+incremental=False
+if not hasattr(mlp_estimator, 'coefs_') or (not mlp_estimator.warm_start and not
                                    incremental):
     # First time training the model
-    self._initialize(y, layer_units)
+    mlp_estimator._initialize(y, layer_units)
 
 # lbfgs does not support mini-batches
-if self.solver == 'lbfgs':
+if mlp_estimator.solver == 'lbfgs':
     batch_size = n_samples
-elif self.batch_size == 'auto':
+elif mlp_estimator.batch_size == 'auto':
     batch_size = min(200, n_samples)
 else:
-    if self.batch_size < 1 or self.batch_size > n_samples:
+    if mlp_estimator.batch_size < 1 or mlp_estimator.batch_size > n_samples:
         warnings.warn("Got `batch_size` less than 1 or larger than "
                       "sample size. It is going to be clipped")
-    batch_size = np.clip(self.batch_size, 1, n_samples)
+    batch_size = np.clip(mlp_estimator.batch_size, 1, n_samples)
 
 # Initialize lists
 activations = [X]
