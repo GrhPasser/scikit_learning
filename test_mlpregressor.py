@@ -43,7 +43,7 @@ n_samples, n_features = X.shape
 mlp_estimator.n_outputs_ = y.shape[1]
 
 layer_units = ([n_features] + hidden_layer_sizes +
-               [self.n_outputs_])
+               [mlp_estimator.n_outputs_])
 
 # check random state
 mlp_estimator._random_state = check_random_state(mlp_estimator.random_state)
@@ -77,3 +77,10 @@ coef_grads = [np.empty((n_fan_in_, n_fan_out_)) for n_fan_in_,
 
 intercept_grads = [np.empty(n_fan_out_) for n_fan_out_ in
                    layer_units[1:]]
+
+activations = mlp_estimator._forward_pass(activations)
+
+print('output: ', activations[mlp_estimator.n_layers_ - 1])
+for i in range(mlp_estimator.n_layers_ - 1):
+    print('weight[%d]: ' % i, mlp_estimator.coefs_[i])
+    print('bias[%d]: ' %i, mlp_estimator.intercepts_[i])
